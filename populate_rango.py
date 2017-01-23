@@ -35,14 +35,14 @@ def populate():
             'Other Frameworks': {"pages": other_pages}}
 
     for cat, cat_data in cats.items():
-        c = add_cat(cat)
+        c = add_cat(cat, 0, 0, cat)
         for p in cat_data["pages"]:
-            add_page(c, p["title"], p["url"])
+            add_page(c, p["title"], p["url"], 0)
 
     for c in Category.objects.all():
         for p in Page.objects.filter(category=c):
             print(" - {0} - {1}".format(str(c), str(p)))
-def add_page(cat, title, url, views=10):
+def add_page(cat, title, url, views):
     p = Page.objects.get_or_create(category=cat, title=title, url= url)[0]
     p.url = url
     p.views=views
@@ -50,12 +50,13 @@ def add_page(cat, title, url, views=10):
     print(p)
     return p
 
-def add_cat(name, views, likes):
-    c = Category.objects.get_or_create(name=name, views=views, likes=likes)[0]
-    print(c)
+def add_cat(name, views, likes, slug):
+    c = Category.objects.get_or_create(name=name, views=views, likes=likes, slug=name)[0]
     c.views = views
     c.likes = likes
+    c.slug = name
     c.save()
+    print(c)
     return c
 
 if __name__ == '__main__':
